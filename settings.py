@@ -24,3 +24,4 @@ class Settings:
         self.fleet_direction = 1  # 1 means right; -1 means left1 means right; -1 means left
 
         self.ship_limit = 3
+        
