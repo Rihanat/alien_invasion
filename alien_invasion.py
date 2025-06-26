@@ -1,11 +1,12 @@
 import sys
 import pygame
-from time import sleep  # 🟢 NEW
+from time import sleep
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
-from game_stats import GameStats  # 🟢 NEW
+from game_stats import GameStats
+from scoreboard import Scoreboard  # 🟢 NEW
 
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
@@ -19,22 +20,21 @@ class AlienInvasion:
             (self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Alien Invasion")
 
-        self.stats = GameStats(self)  # 🟢 NEW
+        self.stats = GameStats(self)
+        self.sb = Scoreboard(self)  # 🟢 NEW
+
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
 
         self._create_fleet()
 
-        self.score = 0
-        self.font = pygame.font.SysFont(None, 36)
-
     def run_game(self):
         """Main loop for the game."""
         while True:
             self._check_events()
 
-            if self.stats.game_active:  # 🟢 NEW
+            if self.stats.game_active:
                 self.ship.update()
                 self._update_bullets()
                 self._update_aliens()
@@ -92,8 +92,8 @@ class AlienInvasion:
 
         if collisions:
             for aliens_hit in collisions.values():
-                self.score += 10 * len(aliens_hit)
-            print(f"Score: {self.score}")
+                self.stats.score += 10 * len(aliens_hit)
+            self.sb.prep_score()  # 🟢 Update score image
 
         if not self.aliens:
             self.bullets.empty()
@@ -137,7 +137,7 @@ class AlienInvasion:
         """Respond to the ship being hit by an alien."""
         if self.stats.ships_left > 0:
             self.stats.ships_left -= 1
-            print(f"Ships left: {self.stats.ships_left}")
+            self.sb.prep_ships()  # 🟢 Update remaining ships
 
             self.aliens.empty()
             self.bullets.empty()
@@ -145,7 +145,7 @@ class AlienInvasion:
             self._create_fleet()
             self.ship.center_ship()
 
-            sleep(0.5)  # 🟢 NEW: Pause for half a second
+            sleep(0.5)
         else:
             self.stats.game_active = False
             print("Game Over")
@@ -183,8 +183,7 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
 
-        score_image = self.font.render(f"Score: {self.score}", True, (30, 30, 30))
-        self.screen.blit(score_image, (10, 10))
+        self.sb.show_score()  # 🟢 Show score and remaining ships
 
         pygame.display.flip()
 
