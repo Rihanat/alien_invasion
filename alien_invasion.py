@@ -96,9 +96,11 @@ class AlienInvasion:
             self._create_fleet()
 
     def _update_aliens(self):
-        """Update the positions of all aliens in the fleet."""
+        """Update the positions of all aliens in the fleet and check for collisions."""
         self._check_fleet_edges()
         self.aliens.update()
+        self._check_alien_ship_collision()   # NEW
+        self._check_aliens_bottom()          # NEW
 
     def _check_fleet_edges(self):
         """Respond appropriately if any aliens have reached an edge."""
@@ -137,6 +139,19 @@ class AlienInvasion:
         alien.rect.x = alien.x
         alien.rect.y = alien_height + 2 * alien_height * row_number
         self.aliens.add(alien)
+
+    def _check_alien_ship_collision(self):
+        """Respond to an alien hitting the ship."""
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            print("Ship hit!")  # Placeholder for future logic
+            sys.exit()
+
+    def _check_aliens_bottom(self):
+        """Check if any aliens have reached the bottom of the screen."""
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= self.settings.screen_height:
+                print("Alien reached the bottom!")  # Placeholder for future logic
+                sys.exit()
 
     def _update_screen(self):
         """Update images on the screen and flip to the new screen."""
