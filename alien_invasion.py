@@ -3,6 +3,7 @@ import pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from alien import Alien  # ← NEW
 
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
@@ -18,6 +19,7 @@ class AlienInvasion:
 
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
+        self.alien = Alien(self)  # ← NEW
 
     def run_game(self):
         """Main loop for the game."""
@@ -74,6 +76,7 @@ class AlienInvasion:
         """Update images on the screen and flip to the new screen."""
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
+        self.alien.blitme()  # ← NEW
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         pygame.display.flip()
