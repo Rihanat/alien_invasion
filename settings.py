@@ -22,3 +22,5 @@ class Settings:
         self.alien_speed = 1.0  # Speed of aliens left/right
         self.fleet_drop_speed = 10  # How fast fleet drops when edge is hit
         self.fleet_direction = 1  # 1 means right; -1 means left1 means right; -1 means left
+
+        self.ship_limit = 3

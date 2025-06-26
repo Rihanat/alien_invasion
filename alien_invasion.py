@@ -4,7 +4,7 @@ from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
-
+from game_stats import GameStats  # NEW
 
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
@@ -18,13 +18,13 @@ class AlienInvasion:
             (self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Alien Invasion")
 
+        self.stats = GameStats(self)  # NEW
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
 
         self._create_fleet()
 
-        # 🟢 NEW: Track score
         self.score = 0
         self.font = pygame.font.SysFont(None, 36)
 
@@ -32,9 +32,12 @@ class AlienInvasion:
         """Main loop for the game."""
         while True:
             self._check_events()
-            self.ship.update()
-            self._update_bullets()
-            self._update_aliens()
+
+            if self.stats.game_active:  # Only update if game is active
+                self.ship.update()
+                self._update_bullets()
+                self._update_aliens()
+
             self._update_screen()
 
     def _check_events(self):
@@ -89,7 +92,7 @@ class AlienInvasion:
         if collisions:
             for aliens_hit in collisions.values():
                 self.score += 10 * len(aliens_hit)
-            print(f"Score: {self.score}")  # Debug only
+            print(f"Score: {self.score}")
 
         if not self.aliens:
             self.bullets.empty()
@@ -99,8 +102,8 @@ class AlienInvasion:
         """Update the positions of all aliens in the fleet and check for collisions."""
         self._check_fleet_edges()
         self.aliens.update()
-        self._check_alien_ship_collision()   # NEW
-        self._check_aliens_bottom()          # NEW
+        self._check_alien_ship_collision()
+        self._check_aliens_bottom()
 
     def _check_fleet_edges(self):
         """Respond appropriately if any aliens have reached an edge."""
@@ -114,6 +117,34 @@ class AlienInvasion:
         for alien in self.aliens.sprites():
             alien.rect.y += self.settings.fleet_drop_speed
         self.settings.fleet_direction *= -1
+
+    def _check_alien_ship_collision(self):
+        """Respond to an alien hitting the ship."""
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            print("Ship hit!")
+            self._ship_hit()
+
+    def _check_aliens_bottom(self):
+        """Check if any aliens have reached the bottom of the screen."""
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= self.settings.screen_height:
+                print("Alien reached the bottom!")
+                self._ship_hit()
+
+    def _ship_hit(self):
+        """Respond to the ship being hit by an alien."""
+        if self.stats.ships_left > 0:
+            self.stats.ships_left -= 1
+            print(f"Ships left: {self.stats.ships_left}")
+
+            self.aliens.empty()
+            self.bullets.empty()
+
+            self._create_fleet()
+            self.ship.center_ship()
+        else:
+            self.stats.game_active = False
+            print("Game Over")
 
     def _create_fleet(self):
         """Create a full fleet of aliens."""
@@ -140,19 +171,6 @@ class AlienInvasion:
         alien.rect.y = alien_height + 2 * alien_height * row_number
         self.aliens.add(alien)
 
-    def _check_alien_ship_collision(self):
-        """Respond to an alien hitting the ship."""
-        if pygame.sprite.spritecollideany(self.ship, self.aliens):
-            print("Ship hit!")  # Placeholder for future logic
-            sys.exit()
-
-    def _check_aliens_bottom(self):
-        """Check if any aliens have reached the bottom of the screen."""
-        for alien in self.aliens.sprites():
-            if alien.rect.bottom >= self.settings.screen_height:
-                print("Alien reached the bottom!")  # Placeholder for future logic
-                sys.exit()
-
     def _update_screen(self):
         """Update images on the screen and flip to the new screen."""
         self.screen.fill(self.settings.bg_color)
@@ -161,7 +179,6 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
 
-        # 🟢 NEW: Draw score
         score_image = self.font.render(f"Score: {self.score}", True, (30, 30, 30))
         self.screen.blit(score_image, (10, 10))
 
