@@ -24,13 +24,17 @@ class AlienInvasion:
 
         self._create_fleet()
 
+        # 🟢 NEW: Track score
+        self.score = 0
+        self.font = pygame.font.SysFont(None, 36)
+
     def run_game(self):
         """Main loop for the game."""
         while True:
             self._check_events()
             self.ship.update()
             self._update_bullets()
-            self._update_aliens()  # ← Moves the aliens
+            self._update_aliens()
             self._update_screen()
 
     def _check_events(self):
@@ -71,7 +75,6 @@ class AlienInvasion:
         """Update position of bullets and get rid of old ones."""
         self.bullets.update()
 
-        # Remove bullets that have disappeared
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
@@ -83,8 +86,12 @@ class AlienInvasion:
         collisions = pygame.sprite.groupcollide(
             self.bullets, self.aliens, True, True)
 
+        if collisions:
+            for aliens_hit in collisions.values():
+                self.score += 10 * len(aliens_hit)
+            print(f"Score: {self.score}")  # Debug only
+
         if not self.aliens:
-        # Destroy existing bullets and create new fleet
             self.bullets.empty()
             self._create_fleet()
 
@@ -138,6 +145,11 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
+
+        # 🟢 NEW: Draw score
+        score_image = self.font.render(f"Score: {self.score}", True, (30, 30, 30))
+        self.screen.blit(score_image, (10, 10))
+
         pygame.display.flip()
 
 
