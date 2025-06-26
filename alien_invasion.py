@@ -30,7 +30,7 @@ class AlienInvasion:
             self._check_events()
             self.ship.update()
             self._update_bullets()
-            self._update_aliens() # ← move the aliens
+            self._update_aliens()  # ← Moves the aliens
             self._update_screen()
 
     def _check_events(self):
@@ -75,6 +75,13 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
+
+        self._check_bullet_alien_collisions()
+
+    def _check_bullet_alien_collisions(self):
+        """Respond to bullet-alien collisions."""
+        collisions = pygame.sprite.groupcollide(
+            self.bullets, self.aliens, True, True)
 
     def _update_aliens(self):
         """Update the positions of all aliens in the fleet."""
