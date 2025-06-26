@@ -7,7 +7,7 @@ class Ship:
         """Initialize the ship and set its starting position."""
         self.screen = ai_game.screen
         self.screen_rect = ai_game.screen.get_rect()
-        self.settings = ai_game.settings
+        self.settings = ai_game.settings  # Access game settings
 
         # Load the ship image and get its rect.
         self.image = pygame.image.load('Images/ship.bmp')
@@ -21,7 +21,7 @@ class Ship:
 
         # Movement flags
         self.moving_right = False
-        self.moving_left = False  # ← Add this
+        self.moving_left = False
 
     def update(self):
         """Update the ship’s position based on the movement flags."""
