@@ -19,7 +19,6 @@ class Settings:
         self.bullets_allowed = 3
 
         # Alien settings
-        self.alien_speed = 1.0
-        self.fleet_drop_speed = 10
-        # fleet_direction of 1 represents right; -1 represents left.
-        self.fleet_direction = 1# 1 means right; -1 means left
+        self.alien_speed = 1.0  # Speed of aliens left/right
+        self.fleet_drop_speed = 10  # How fast fleet drops when edge is hit
+        self.fleet_direction = 1  # 1 means right; -1 means left1 means right; -1 means left

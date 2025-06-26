@@ -3,7 +3,7 @@ import pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
-from alien import Alien  # ← new import
+from alien import Alien
 
 
 class AlienInvasion:
@@ -30,7 +30,7 @@ class AlienInvasion:
             self._check_events()
             self.ship.update()
             self._update_bullets()
-            self.aliens.update()  # NEW LINE ← Moves the aliens
+            self._update_aliens()  # ← move the aliens
             self._update_screen()
 
     def _check_events(self):
@@ -71,6 +71,7 @@ class AlienInvasion:
         """Update position of bullets and get rid of old ones."""
         self.bullets.update()
 
+        # Remove bullets that have disappeared
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
@@ -88,7 +89,7 @@ class AlienInvasion:
                 break
 
     def _change_fleet_direction(self):
-        """Drop the entire fleet and change direction."""
+        """Drop the entire fleet and change its direction."""
         for alien in self.aliens.sprites():
             alien.rect.y += self.settings.fleet_drop_speed
         self.settings.fleet_direction *= -1
