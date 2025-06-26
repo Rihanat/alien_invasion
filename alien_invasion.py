@@ -19,14 +19,20 @@ class AlienInvasion:
     def run_game(self):
         """Start the main loop for the game."""
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
-
+            self._check_events()
             self.screen.fill(self.settings.bg_color)
-            self.ship.blitme()  # ✅ Draw ship
+            self.ship.blitme()
 
             pygame.display.flip()
+
+    def _check_events(self):
+        """Respond to keypresses and mouse events."""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    self.ship.rect.x += 1
 
 if __name__ == '__main__':
     ai = AlienInvasion()
