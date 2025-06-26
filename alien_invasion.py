@@ -30,7 +30,7 @@ class AlienInvasion:
             self._check_events()
             self.ship.update()
             self._update_bullets()
-            self._update_aliens()  # ← NEW
+            self.aliens.update()  # NEW LINE ← Moves the aliens
             self._update_screen()
 
     def _check_events(self):
