@@ -32,7 +32,7 @@ class AlienInvasion:
         self._create_fleet()
 
         self.play_button = Button(self, "Play")
-        self.stats.game_active = False  # Game starts inactive
+        self.stats.game_active = False  
 
     def run_game(self):
         """Main loop for the game."""
@@ -50,7 +50,7 @@ class AlienInvasion:
         """Respond to keypresses and mouse events."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.stats.save_high_score()  # ✅ Save before quitting
+                self.stats.save_high_score()  
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
@@ -68,7 +68,7 @@ class AlienInvasion:
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
         elif event.key == pygame.K_q:
-            self.stats.save_high_score()  # ✅ Save if quit via Q
+            self.stats.save_high_score()  
             sys.exit()
 
     def _check_keyup_events(self, event):
