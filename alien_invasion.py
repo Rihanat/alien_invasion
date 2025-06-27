@@ -23,8 +23,6 @@ class AlienInvasion:
         pygame.display.set_caption("Alien Invasion")
 
         self.stats = GameStats(self)
-        self.stats.game_active = False  # Game starts inactive
-
         self.sb = Scoreboard(self)
 
         self.ship = Ship(self)
@@ -34,6 +32,7 @@ class AlienInvasion:
         self._create_fleet()
 
         self.play_button = Button(self, "Play")
+        self.stats.game_active = False  # Game starts inactive
 
     def run_game(self):
         """Main loop for the game."""
@@ -80,13 +79,14 @@ class AlienInvasion:
         """Start a new game when the player clicks Play."""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
-            self.settings.initialize_dynamic_settings()  # ✅ Correct textbook method
+            self.settings.initialize_dynamic_settings()
             self.stats.reset_stats()
             self.stats.game_active = True
+            pygame.mouse.set_visible(False)
 
             self.sb.prep_score()
             self.sb.prep_high_score()
-            self.sb.prep_level()  # 🟢 PREPARE LEVEL IMAGE
+            self.sb.prep_level()
             self.sb.prep_ships()
 
             self.aliens.empty()
@@ -94,8 +94,6 @@ class AlienInvasion:
 
             self._create_fleet()
             self.ship.center_ship()
-
-            pygame.mouse.set_visible(False)
 
     def _fire_bullet(self):
         if len(self.bullets) < self.settings.bullets_allowed:
@@ -125,7 +123,6 @@ class AlienInvasion:
             self.bullets.empty()
             self.settings.increase_speed()
 
-            # 🟢 INCREMENT LEVEL
             self.stats.level += 1
             self.sb.prep_level()
 
@@ -150,13 +147,11 @@ class AlienInvasion:
 
     def _check_alien_ship_collision(self):
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
-            print("Ship hit!")
             self._ship_hit()
 
     def _check_aliens_bottom(self):
         for alien in self.aliens.sprites():
             if alien.rect.bottom >= self.settings.screen_height:
-                print("Alien reached the bottom!")
                 self._ship_hit()
                 break
 
@@ -175,7 +170,6 @@ class AlienInvasion:
         else:
             self.stats.game_active = False
             pygame.mouse.set_visible(True)
-            print("Game Over")
 
     def _create_fleet(self):
         alien = Alien(self)
