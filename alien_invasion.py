@@ -6,7 +6,8 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
-from scoreboard import Scoreboard  # 🟢 NEW
+from scoreboard import Scoreboard  
+
 
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
