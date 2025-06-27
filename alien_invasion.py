@@ -7,7 +7,7 @@ from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
 from scoreboard import Scoreboard
-from button import Button  # 🟢 NEW
+from button import Button
 
 
 class AlienInvasion:
@@ -23,7 +23,7 @@ class AlienInvasion:
         pygame.display.set_caption("Alien Invasion")
 
         self.stats = GameStats(self)
-        self.stats.game_active = False  # 🔴 Game starts inactive so Play button shows
+        self.stats.game_active = False  # Game starts inactive
 
         self.sb = Scoreboard(self)
 
@@ -33,7 +33,7 @@ class AlienInvasion:
 
         self._create_fleet()
 
-        self.play_button = Button(self, "Play")  # 🟢 Play button
+        self.play_button = Button(self, "Play")
 
     def run_game(self):
         """Main loop for the game."""
@@ -83,7 +83,10 @@ class AlienInvasion:
             self.settings.__init__()  # Reset dynamic settings
             self.stats.reset_stats()
             self.stats.game_active = True
+
             self.sb.prep_score()
+            self.sb.prep_high_score()
+            self.sb.prep_level()  # 🟢 PREPARE LEVEL IMAGE
             self.sb.prep_ships()
 
             self.aliens.empty()
@@ -121,6 +124,11 @@ class AlienInvasion:
         if not self.aliens:
             self.bullets.empty()
             self.settings.increase_speed()
+
+            # 🟢 INCREMENT LEVEL
+            self.stats.level += 1
+            self.sb.prep_level()
+
             self._create_fleet()
 
     def _update_aliens(self):
