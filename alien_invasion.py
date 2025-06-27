@@ -92,12 +92,13 @@ class AlienInvasion:
 
         if collisions:
             for aliens_hit in collisions.values():
-                self.stats.score += 10 * len(aliens_hit)
-            self.sb.prep_score()  # 🟢 Update score image
-            self.sb.check_high_score()  # ✅ NEW: Check if we beat high score
+                self.stats.score += self.settings.alien_points * len(aliens_hit)
+            self.sb.prep_score()
+            self.sb.check_high_score()
 
         if not self.aliens:
             self.bullets.empty()
+            self.settings.increase_speed()  # 🟢 Speed up game
             self._create_fleet()
 
     def _update_aliens(self):
@@ -138,7 +139,7 @@ class AlienInvasion:
         """Respond to the ship being hit by an alien."""
         if self.stats.ships_left > 0:
             self.stats.ships_left -= 1
-            self.sb.prep_ships()  # 🟢 Update remaining ships
+            self.sb.prep_ships()
 
             self.aliens.empty()
             self.bullets.empty()
