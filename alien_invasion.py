@@ -94,6 +94,7 @@ class AlienInvasion:
             for aliens_hit in collisions.values():
                 self.stats.score += 10 * len(aliens_hit)
             self.sb.prep_score()  # 🟢 Update score image
+            self.sb.check_high_score()  # ✅ NEW: Check if we beat high score
 
         if not self.aliens:
             self.bullets.empty()
